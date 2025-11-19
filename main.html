@@ -3,13 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>I'm not a robot</title>
+  <title>Robot Check</title>
 
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-    }
+    body { font-family: Arial; padding: 20px; }
 
     #container {
       display: flex;
@@ -30,7 +27,6 @@
       padding: 10px 20px;
       margin-top: 20px;
       font-size: 16px;
-      cursor: pointer;
       display: none;
     }
 
@@ -59,32 +55,35 @@
     const para = document.getElementById("para");
 
     let clickedImages = [];
+
+    // 5 unique images with required Cypress classes
     let images = [
-      "img1.jpg",
-      "img2.jpg",
-      "img3.jpg",
-      "img4.jpg",
-      "img5.jpg"
+      { src: "img1.jpg", cls: "img1" },
+      { src: "img2.jpg", cls: "img2" },
+      { src: "img3.jpg", cls: "img3" },
+      { src: "img4.jpg", cls: "img4" },
+      { src: "img5.jpg", cls: "img5" }
     ];
 
-    // Select a random image to duplicate
-    const duplicateImage = images[Math.floor(Math.random() * images.length)];
-    images.push(duplicateImage);
+    // Pick random duplicate
+    const duplicate = images[Math.floor(Math.random() * images.length)];
 
-    // Shuffle the array
-    images.sort(() => Math.random() - 0.5);
+    // Add duplicate image with SAME CLASS (important for Cypress)
+    images.push({ ...duplicate });
 
-    // Display images
-    images.forEach(src => {
+    // Shuffle images
+    images = images.sort(() => Math.random() - 0.5);
+
+    // Display tiles
+    images.forEach(item => {
       const tile = document.createElement("img");
-      tile.src = src;
-      tile.classList.add("tile");
+      tile.src = item.src;
+      tile.classList.add("tile", item.cls);
 
       tile.addEventListener("click", () => {
         if (clickedImages.length < 2 && !clickedImages.includes(tile)) {
           tile.style.border = "3px solid blue";
           clickedImages.push(tile);
-
           resetBtn.style.display = "inline-block";
 
           if (clickedImages.length === 2) {
@@ -96,10 +95,12 @@
       container.appendChild(tile);
     });
 
+    // Reset button
     resetBtn.addEventListener("click", () => {
       location.reload();
     });
 
+    // Verify button
     verifyBtn.addEventListener("click", () => {
       verifyBtn.style.display = "none";
 
@@ -109,11 +110,13 @@
       if (img1 === img2) {
         para.textContent = "You are a human. Congratulations!";
       } else {
-        para.textContent = "We can't verify you as a human. You selected the non-identical tiles.";
+        para.textContent =
+          "We can't verify you as a human. You selected the non-identical tiles.";
       }
     });
   </script>
 
 </body>
 </html>
+
 
