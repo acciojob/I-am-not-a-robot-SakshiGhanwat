@@ -1,18 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>I'm not a robot</title>
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <main>
-      <!-- solution start -->
-      
-      <!-- solution end -->
-    </main>
-    <script src="./script.js"></script>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>I'm not a robot</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    #container {
+      display: flex;
+      flex-wrap: wrap;
+      width: 360px;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .tile {
+      width: 110px;
+      height: 110px;
+      border: 2px solid #ccc;
+      cursor: pointer;
+    }
+
+    #reset, #verify {
+      padding: 10px 20px;
+      margin-top: 20px;
+      font-size: 16px;
+      cursor: pointer;
+      display: none;
+    }
+
+    #para {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h3 id="h">Please click on the identical tiles to verify that you are not a robot.</h3>
+
+  <div id="container"></div>
+
+  <button id="reset">Reset</button>
+  <button id="verify">Verify</button>
+
+  <p id="para"></p>
+
+  <script>
+    const container = document.getElementById("container");
+    const resetBtn = document.getElementById("reset");
+    const verifyBtn = document.getElementById("verify");
+    const para = document.getElementById("para");
+
+    let clickedImages = [];
+    let images = [
+      "img1.jpg",
+      "img2.jpg",
+      "img3.jpg",
+      "img4.jpg",
+      "img5.jpg"
+    ];
+
+    // Select a random image to duplicate
+    const duplicateImage = images[Math.floor(Math.random() * images.length)];
+    images.push(duplicateImage);
+
+    // Shuffle the array
+    images.sort(() => Math.random() - 0.5);
+
+    // Display images
+    images.forEach(src => {
+      const tile = document.createElement("img");
+      tile.src = src;
+      tile.classList.add("tile");
+
+      tile.addEventListener("click", () => {
+        if (clickedImages.length < 2 && !clickedImages.includes(tile)) {
+          tile.style.border = "3px solid blue";
+          clickedImages.push(tile);
+
+          resetBtn.style.display = "inline-block";
+
+          if (clickedImages.length === 2) {
+            verifyBtn.style.display = "inline-block";
+          }
+        }
+      });
+
+      container.appendChild(tile);
+    });
+
+    resetBtn.addEventListener("click", () => {
+      location.reload();
+    });
+
+    verifyBtn.addEventListener("click", () => {
+      verifyBtn.style.display = "none";
+
+      const img1 = clickedImages[0].src;
+      const img2 = clickedImages[1].src;
+
+      if (img1 === img2) {
+        para.textContent = "You are a human. Congratulations!";
+      } else {
+        para.textContent = "We can't verify you as a human. You selected the non-identical tiles.";
+      }
+    });
+  </script>
+
+</body>
 </html>
+
